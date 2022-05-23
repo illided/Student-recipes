@@ -10,7 +10,11 @@ const Recipe = (props) => {
       ></Card.Img>
       <Card.Body>
         <Card.Title className="text-center">{props.recipe.title}</Card.Title>
-        <Card.Text>{props.recipe.description}</Card.Text>
+        <Card.Subtitle className="text-center mb-2 text-muted">Стоимость: {props.recipe.cost} руб.</Card.Subtitle>
+        <Card.Subtitle className="mb-2 text-muted">Ингредиенты: {props.recipe.ingredients.join(', ')}</Card.Subtitle>
+        <Card.Text>
+          {props.recipe.description}
+        </Card.Text>
         {props.isInPreferences ? (
           <Button
             variant="danger"

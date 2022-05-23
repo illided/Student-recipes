@@ -2,40 +2,44 @@ import React, { useState } from "react";
 import { Button, Navbar, Nav } from "react-bootstrap";
 import TopBar from "./components/TopBar.jsx";
 import { Routes, Route, Link } from "react-router-dom";
+import { v4 as uuid} from 'uuid';
+import Cookies from 'universal-cookie';
 import HomePage from "./pages/Home.jsx";
-// import PreferencesPage from "./components/pages/Preferences.jsx";
+import PreferencesPage from "./pages/Preferences.jsx";
+
+
 // import AddRecipePage from "./components/pages/AddRecipe.jsx";
 
 function App() {
+  const cookies = new Cookies();
+  if (cookies.get('user_id') === undefined) {
+      cookies.set('user_id', uuid());
+  }
+
   const [recipes, setRecipes] = useState([]);
 
   function addRecipe(title, description) {
-    let id = Date.now();
-    let newRecipe = {
-      id: id,
-      isPrefered: false,
-      title,
-      description,
-    };
-    setRecipes([...recipes, newRecipe]);
+    
   }
 
   function deleteRecipe(id) {
-    setRecipes(recipes.filter((el) => el.id != id));
+    
   }
 
-  function addPreference(id) {
-    let pref_copy = recipes.map((el) =>
-      el.id != id ? el : { ...el, isPrefered: true }
-    );
-    setRecipes(pref_copy);
+  function setPreference(id, isPrefered, callback = (responce) => undefined) {
+    fetch('api/v1/set_preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({'user_id': cookies.get('user_id'), 'isPrefered': isPrefered, 'recipe_id': id })
+    }).then(callback)
   }
 
-  function removePreference(id) {
-    let pref_copy = recipes.map((el) =>
-      el.id != id ? el : { ...el, isPrefered: false }
-    );
-    setRecipes(pref_copy);
+  function addPreference(id, callback = (responce) => undefined) {
+    setPreference(id, true, callback)
+  }
+
+  function removePreference(id, callback = (responce) => undefined) {
+    setPreference(id, false, callback)
   }
 
   const routes = [
@@ -59,8 +63,16 @@ function App() {
             />
           }
         />
-        {/* <Route href="/preferences" element={<PreferencesPage />} />
-        <Route href="/new_recipe" element={<AddRecipePage />} /> */}
+        <Route
+          path="/preferences"
+          element={
+            <PreferencesPage
+              recipes={recipes}
+              addPreference={addPreference}
+              removePreference={removePreference}
+            />
+          }/>
+        {/* <Route href="/new_recipe" element={<AddRecipePage />} /> */}
       </Routes>
       </div>
     </div>

@@ -36,7 +36,6 @@ def add_recipe(conn, recipe: dict):
             [ingredient_id, recipe_id],
         )
 
-    conn.commit()
     curs.close()
 
 def get_all_recipes(conn, user_id: str) -> list:
@@ -54,7 +53,7 @@ def get_all_recipes(conn, user_id: str) -> list:
     , [user_id])
 
     query = curs.fetchall()
-    query = [dict(zip(['recipe_id', 'title', 'cost', 'description', 'user_id', 'ingredient_name'], r)) for r in query]
+    query = [dict(zip(['id', 'title', 'cost', 'description', 'user_id', 'ingredient_name'], r)) for r in query]
     for recipe in query:
         recipe['ingredients'] = recipe['ingredient_name'].split(',')
         del recipe['ingredient_name']
@@ -75,22 +74,23 @@ def get_preferences(conn, user_id: str) -> list:
         from recipes 
         JOIN ingredient_to_recipe ON ingredient_to_recipe.recipe_id=recipes.ROWID 
         join ingredients on ingredients.ROWID=ingredient_to_recipe.ingredient_id
-        join (select * from user_preferences where user_id='Ilya') as users on users.recipe_id=recipes.ROWID
+        join (select * from user_preferences where user_id=?) as users on users.recipe_id=recipes.ROWID
         GROUP BY ingredient_to_recipe.recipe_id HAVING COUNT(*) > 1;
         """
-    )
+    , [user_id])
 
     query = curs.fetchall()
-    query = [dict(zip(['recipe_id', 'title', 'cost', 'description', 'ingredient_name'], r)) for r in query]
+    query = [dict(zip(['id', 'title', 'cost', 'description', 'ingredient_name'], r)) for r in query]
     for recipe in query:
         recipe['ingredients'] = recipe['ingredient_name'].split(',')
         del recipe['ingredient_name']
 
+    curs.close()
     return query
 
 def set_preference(conn, user_id: str, recipe_id: int, isPrefered: bool):
     curs = conn.cursor()
-
+    print(f"Inserting [{user_id}, {recipe_id}]")
     if isPrefered:
         curs.execute(
             """
@@ -103,6 +103,9 @@ def set_preference(conn, user_id: str, recipe_id: int, isPrefered: bool):
             DELETE FROM user_preferences WHERE user_id=? AND recipe_id=?
             """
         , [user_id, recipe_id])
+
+    curs.execute('commit')
+    curs.close()
 
 
 # ------------------------------ for tests ------------------------------

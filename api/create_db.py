@@ -36,7 +36,8 @@ def create_database():
         """
         CREATE TABLE user_preferences (
             user_id VARCHAR,
-            recipe_id INTEGER
+            recipe_id INTEGER,
+            CONSTRAINT unq UNIQUE (user_id, recipe_id)
         )
         """
     )
