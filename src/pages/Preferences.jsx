@@ -7,9 +7,6 @@ const PreferencesPage = (props) => {
 
     const cookies = new Cookies();
 
-    let a = {a: 1, b: 1, c: 1, d: 1, e: 1}
-    let b = {...a}
-
     useEffect(() => {
     fetch('/api/v1/preferences', {
       method: 'POST',

@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { Button, Navbar, Nav } from "react-bootstrap";
 import TopBar from "./components/TopBar.jsx";
 import { Routes, Route, Link } from "react-router-dom";
 import { v4 as uuid} from 'uuid';
 import Cookies from 'universal-cookie';
+
 import HomePage from "./pages/Home.jsx";
 import PreferencesPage from "./pages/Preferences.jsx";
-
-
-// import AddRecipePage from "./components/pages/AddRecipe.jsx";
+import AddRecipePage from "./pages/AddRecipe.jsx";
 
 function App() {
   const cookies = new Cookies();
@@ -18,7 +16,7 @@ function App() {
 
   const [recipes, setRecipes] = useState([]);
 
-  function addRecipe(title, description) {
+  function addRecipe(recipe) {
     
   }
 
@@ -72,7 +70,7 @@ function App() {
               removePreference={removePreference}
             />
           }/>
-        {/* <Route href="/new_recipe" element={<AddRecipePage />} /> */}
+        <Route path="/new_recipe" element={<AddRecipePage />} />
       </Routes>
       </div>
     </div>

@@ -24,7 +24,6 @@ def all_recipes_route():
 @app.route('/api/v1/set_preference', methods=['POST'])
 def set_preference_route():
     body = request.get_json()
-    print(body)
     user_id = body['user_id']
     isPrefered = body['isPrefered']
     recipe_id = body['recipe_id']

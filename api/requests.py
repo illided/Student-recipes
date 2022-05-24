@@ -31,11 +31,11 @@ def add_recipe(conn, recipe: dict):
 
         curs.execute(
             """
-            INSERT OR IGNORE INTO ingredient_to_recipe VALUES (?, ?)
+            INSERT INTO ingredient_to_recipe VALUES (?, ?)
             """,
             [ingredient_id, recipe_id],
         )
-
+    curs.execute('commit')
     curs.close()
 
 def get_all_recipes(conn, user_id: str) -> list:
@@ -90,7 +90,6 @@ def get_preferences(conn, user_id: str) -> list:
 
 def set_preference(conn, user_id: str, recipe_id: int, isPrefered: bool):
     curs = conn.cursor()
-    print(f"Inserting [{user_id}, {recipe_id}]")
     if isPrefered:
         curs.execute(
             """

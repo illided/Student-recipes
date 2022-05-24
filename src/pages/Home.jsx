@@ -30,7 +30,7 @@ const HomePage = (props) => {
 
   return (
     <div className="HomePage>">
-      <h1 style={{textAlign: "center"}}>Рецепты</h1>
+      <h1>Рецепты</h1>
       <RecipeList
         recipes={recipes}
         addPreference={(id) => {
